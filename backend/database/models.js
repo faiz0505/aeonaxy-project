@@ -19,6 +19,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  porfilePic: String,
+  location: String,
   isVerified: {
     type: Boolean,
     default: false,

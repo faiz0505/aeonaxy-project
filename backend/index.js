@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectToDatabase = require("./database/connection");
+
 require("dotenv").config();
 const app = express();
 const clientUrl = process.env.CLIENT_URL;
@@ -18,8 +19,7 @@ app.get("/verify-email", (req, res) => {
   const { token } = req.query;
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // Redirect to create profile page
-    res.redirect(`/create-profile?email=${decoded.email}`);
+    console.log(decoded);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: "Invalid token" });

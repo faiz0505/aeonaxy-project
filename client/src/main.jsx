@@ -10,6 +10,7 @@ import SignIn from "./routes/sign-in.jsx";
 import SignUpPage from "./routes/sign-up.jsx";
 import RootLayout from "./layouts/RootLayout.jsx";
 import { NextUIProvider } from "@nextui-org/react";
+import CreateProfile from "./routes/create-profile.jsx";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/sign-in", element: <SignIn /> },
       { path: "sign-up", element: <SignUpPage /> },
+      { path: "create-profile", element: <CreateProfile /> },
     ],
   },
   {

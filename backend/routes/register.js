@@ -4,14 +4,7 @@ const nodemailer = require("nodemailer");
 const connectToDatabase = require("../database/connection");
 const User = require("../database/models");
 const router = express.Router();
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "faizali786313@gmail.com", // your Gmail email address
-    pass: "yfbo niqy sdnq svut", // your Gmail password
-  },
-});
+const transporter = require("../utils");
 const JWT_SECRET = "your_secret_key";
 router.post("/register", async (req, res) => {
   const { name, username, email, password } = req.body;
@@ -19,15 +12,19 @@ router.post("/register", async (req, res) => {
   await connectToDatabase();
   const userExist = await User.findOne({ email });
   if (userExist) {
-    res.status(401).json({ message: "User already exists" });
+    res.status(401).json({ message: "Email already registered" });
     return;
   }
-  // Email body
+  const userNameExist = await User.findOne({ username });
+  if (userNameExist) {
+    res.status(401).json({ message: "Username has already been taken" });
+    return;
+  }
   const mailOptions = {
     from: "faizali786313@gmail.com",
     to: email,
     subject: "Email Verification",
-    text: `Click on the link to verify your email: http://localhost:3000/verify-email?token=${token}`,
+    html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><button><a href="http://localhost:3000/verify-email?token=${token}">Signup to Dribble</a></button>`,
   };
 
   // Send email
@@ -44,12 +41,10 @@ router.post("/register", async (req, res) => {
         password,
         isVerified: false,
       });
-      res
-        .status(200)
-        .json({
-          message: "Verification email sent successfully",
-          user: newUser,
-        });
+      res.status(201).json({
+        message: "Verification email sent successfully",
+        user: newUser,
+      });
     }
   });
 });

@@ -1,107 +1,198 @@
 import React, { useState } from "react";
-
+import Button from "../components/Button";
+import { Link } from "react-router-dom";
+import { Checkbox } from "@nextui-org/react";
+import { MdError } from "react-icons/md";
+import { useForm } from "react-hook-form";
+import { Input } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const SignupForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [isSelected, setIsSelected] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const navigate = useNavigate();
+  const onSubmit = async (data) => {
     try {
+      if (!isSelected) {
+        alert("please agree ");
+        return;
+      }
+      setErrorMsg(null);
+      setIsLoading(true);
       const res = await fetch("http://localhost:8000/register", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       });
+      const { message } = await res.json();
+
       if (!res.ok) {
-        alert("error");
+        setErrorMsg(message);
         return;
       }
-      const jsonRes = await res.json();
-      console.log(jsonRes);
+      navigate("/create-profile");
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-gray-100 rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col mb-4">
-          <label htmlFor="name" className="mb-1">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="border border-gray-300 px-3 py-2 rounded-lg"
-            required
+    <main className="w-full h-screen flex overflow-hidden">
+      <section className="w-1/3 object-cover object-center hidden lg:block">
+        <img src="/IMG.jpg" />
+      </section>
+      <section className="w-2/3 p-4 flex flex-col gap-8 self-center lg:self-start mx-auto lg:mx-0">
+        <div className="flex justify-between">
+          <Button
+            as={Link}
+            to={"/"}
+            text={"Back to Home"}
+            size={"sm"}
+            color={"primary"}
           />
+          <p>
+            Already a member?{" "}
+            <Link to={"/sign-in"} className="text-blue-700">
+              Sign In
+            </Link>
+          </p>
         </div>
-        <div className="flex flex-col mb-4">
-          <label htmlFor="username" className="mb-1">
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="border border-gray-300 px-3 py-2 rounded-lg"
-            required
-          />
-        </div>
-        <div className="flex flex-col mb-4">
-          <label htmlFor="email" className="mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border border-gray-300 px-3 py-2 rounded-lg"
-            required
-          />
-        </div>
-        <div className="flex flex-col mb-4">
-          <label htmlFor="password" className="mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="border border-gray-300 px-3 py-2 rounded-lg"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="self-center md:w-96 w-full flex flex-col gap-4"
         >
-          Sign Up
-        </button>
-      </form>
-    </div>
+          <h4 className="text-lg font-bold">Sign up to Dribble</h4>
+          {errorMsg && (
+            <p className="text-sm text-red-600 flex items-center gap-2">
+              <MdError />
+              <span className="mb-0.5 font-semibold">{errorMsg}</span>
+            </p>
+          )}
+
+          <div className="flex gap-3">
+            <Input
+              name={"name"}
+              type={"text"}
+              label={"Name"}
+              placeholder={"your name"}
+              labelPlacement={"outside"}
+              labelStyle={"font-bold"}
+              size={"sm"}
+              // register={}
+              {...register("name", {
+                required: {
+                  value: true,
+                  message: "required",
+                },
+                minLength: {
+                  value: 3,
+                  message: "please enter at least 3 characters",
+                },
+              })}
+              isInvalid={errors.name && true}
+              errorMessage={errors.name && errors.name.message}
+            />
+            <Input
+              name={"username"}
+              type={"text"}
+              label={"Username"}
+              placeholder={"create username"}
+              labelPlacement={"outside"}
+              labelStyle={"font-bold"}
+              size={"sm"}
+              {...register("username", {
+                required: "required",
+                minLength: {
+                  value: 4,
+                  message: "please enter at least 4 characters",
+                },
+                pattern: {
+                  value: /^[a-z0-9_]+$/,
+                  message: "only lowercase letters , 0-9 and _ are allowed",
+                },
+              })}
+              isInvalid={errors.username && true}
+              errorMessage={errors.username && errors.username.message}
+            />
+          </div>
+          <Input
+            name={"email"}
+            type={"email"}
+            label={"Email"}
+            placeholder={"your email address"}
+            labelPlacement={"outside"}
+            labelStyle={"font-bold"}
+            size={"sm"}
+            {...register("email", {
+              required: "required",
+              minLength: {
+                value: 8,
+                message: "please enter at least 8 characters",
+              },
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Invalid email address",
+              },
+            })}
+            isInvalid={errors.email && true}
+            errorMessage={errors.email && errors.email.message}
+          />
+          <Input
+            name={"passwrd"}
+            type={"text"}
+            label={"Password"}
+            placeholder={"create Password"}
+            labelPlacement={"outside"}
+            labelStyle={"font-bold"}
+            size={"sm"}
+            {...register("password", {
+              required: "required",
+              minLength: {
+                value: 6,
+                message: "please enter at least 6 characters",
+              },
+              pattern: {
+                value: /^(?=.*[!@#$%^&*()-_=+[\]{};:'",.<>/?])[\w!@#$%^&*()-_=+[\]{};:'",.<>/?]+$/,
+                message:
+                  "Password must include at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+              },
+            })}
+            isInvalid={errors.password && true}
+            errorMessage={errors.password && errors.password.message}
+          />
+          <Checkbox
+            isSelected={isSelected}
+            onValueChange={setIsSelected}
+            size="sm"
+          >
+            <p className="text-xs">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+              Deserunt, similique. Lorem ipsum dolor sit amet.
+            </p>
+          </Checkbox>
+          <Button
+            type={"submit"}
+            text={"Create Account"}
+            color={"secondary"}
+            isLoading={isLoading}
+          />
+          <p className="text-xs font-thin">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nam rem
+            facere omnis fug
+          </p>
+        </form>
+      </section>
+    </main>
   );
 };
 
