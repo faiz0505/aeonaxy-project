@@ -6,6 +6,7 @@ import { MdError } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { Input } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../utils";
 const SignupForm = () => {
   const [isSelected, setIsSelected] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -24,19 +25,13 @@ const SignupForm = () => {
       }
       setErrorMsg(null);
       setIsLoading(true);
-      const res = await fetch("http://localhost:8000/register", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      const { message, user } = await res.json();
-
-      if (!res.ok) {
-        setErrorMsg(message);
-        return;
-      }
+      const res = await api.post("http://localhost:8000/register", data);
+      // const { message, user } = await res.json();
+      console.log(res);
+      // if (!res.ok) {
+      //   setErrorMsg(message);
+      //   return;
+      // }
       navigate("/create-profile");
     } catch (error) {
       console.log(error);
