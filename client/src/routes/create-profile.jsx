@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Avatar, Input } from "@nextui-org/react";
 import Button from "../components/Button";
 import axios from "axios";
+import { getCookie } from "../../utils";
 const CreateProfile = () => {
   const [tempImgUrl, setTempImgurl] = useState();
   const handleSubmit = async (e) => {
@@ -17,11 +18,24 @@ const CreateProfile = () => {
         alert("please choose image or location to continue");
         return;
       }
+
       const uploadImage = await axios.post(
         "https://api.cloudinary.com/v1_1/drev9bq6g/image/upload",
         formData
       );
-      console.log(uploadImage.data);
+      const res = await fetch("http://localhost:8000/update-profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user: "",
+          imageUrl: uploadImage.data.secure_url,
+          imagePublicKey: uploadImage.data.public_key,
+          location: location,
+        }),
+      });
+      console.log(res);
     } catch (error) {
       console.log(error);
     }

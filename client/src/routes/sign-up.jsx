@@ -6,7 +6,6 @@ import { MdError } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { Input } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 const SignupForm = () => {
   const [isSelected, setIsSelected] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -32,7 +31,7 @@ const SignupForm = () => {
         },
         body: JSON.stringify(data),
       });
-      const { message } = await res.json();
+      const { message, user } = await res.json();
 
       if (!res.ok) {
         setErrorMsg(message);

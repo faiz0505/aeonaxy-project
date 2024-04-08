@@ -6,6 +6,7 @@ const User = require("../database/models");
 const router = express.Router();
 const transporter = require("../utils");
 const JWT_SECRET = "your_secret_key";
+
 router.post("/register", async (req, res) => {
   const { name, username, email, password } = req.body;
   const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
@@ -41,6 +42,7 @@ router.post("/register", async (req, res) => {
         password,
         isVerified: false,
       });
+
       res.status(201).json({
         message: "Verification email sent successfully",
         user: newUser,

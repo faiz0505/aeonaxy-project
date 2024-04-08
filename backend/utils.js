@@ -8,4 +8,3 @@ const transporter = nodemailer.createTransport({
 });
 
 module.exports = transporter;
-// http://localhost:3000/verify-email?token=${token}
