@@ -3,8 +3,11 @@ import { Avatar, Input } from "@nextui-org/react";
 import Button from "../components/Button";
 import axios from "axios";
 import { api } from "../../utils";
+import { useNavigate } from "react-router-dom";
 const CreateProfile = () => {
   const [tempImgUrl, setTempImgurl] = useState();
+  const [isLoading, setIsLoading] = useState();
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -18,19 +21,25 @@ const CreateProfile = () => {
         alert("please choose image or location to continue");
         return;
       }
-
+      setIsLoading(true);
       const uploadImage = await axios.post(
         "https://api.cloudinary.com/v1_1/drev9bq6g/image/upload",
         formData
       );
       const res = await api.post("/update-profile", {
+        type: "createProfile",
         imageUrl: uploadImage.data.secure_url,
-        imageKey: uploadImage.data.public_key,
+        imageId: uploadImage.data.public_id,
         location: location,
       });
-      console.log(res);
+      if (res.status === 200) {
+        alert("user updated successfully");
+        navigate("/select-role");
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -86,6 +95,7 @@ const CreateProfile = () => {
             text={"Next"}
             color={"secondary"}
             className={"px-14 self-start"}
+            isLoading={isLoading}
           />
         </form>
       </div>

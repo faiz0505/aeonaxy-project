@@ -26,14 +26,12 @@ const SignupForm = () => {
       setErrorMsg(null);
       setIsLoading(true);
       const res = await api.post("http://localhost:8000/register", data);
-      // const { message, user } = await res.json();
-      console.log(res);
-      // if (!res.ok) {
-      //   setErrorMsg(message);
-      //   return;
-      // }
       navigate("/create-profile");
     } catch (error) {
+      if (error.response.status === 401) {
+        setErrorMsg(error.response.data.message);
+        return;
+      }
       console.log(error);
     } finally {
       setIsLoading(false);

@@ -19,9 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  porfilePic: String,
-  imagekey: String,
+  profilePic: String,
+  imageId: String,
   location: String,
+  role: String,
   isVerified: {
     type: Boolean,
     default: false,

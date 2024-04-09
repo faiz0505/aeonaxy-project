@@ -3,10 +3,13 @@ const nodemailer = require("nodemailer");
 const connectToDatabase = require("../database/connection");
 const User = require("../database/models");
 const transporter = require("../utils");
+const { response } = require("express");
 
 const register = async (req, res) => {
   const { name, username, email, password } = req.body;
-  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ email, isVarified: false }, process.env.JWT_SECRET, {
+    expiresIn: "3d",
+  });
   await connectToDatabase();
   const userExist = await User.findOne({ email });
   if (userExist) {
@@ -22,14 +25,14 @@ const register = async (req, res) => {
     from: "faizali786313@gmail.com",
     to: email,
     subject: "Email Verification",
-    html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><button><a href="http://localhost:3000/verify-email?token=${token}">Signup to Dribble</a></button>`,
+    html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><button style="background:#3630a3;color:white;padding:"4px,2px";"><a href="http://localhost:3000/verify-email?token=${token}">Signup to Dribble</a></button>`,
   };
 
   // Send email
   transporter.sendMail(mailOptions, async (error, info) => {
     if (error) {
       console.log(error);
-      res.status(500).json({ error: "Failed to send verification email" });
+      res.status(401).json({ error: "Failed to send verification email" });
     } else {
       console.log("Email sent: " + info.response);
       const newUser = await User.create({
@@ -37,16 +40,12 @@ const register = async (req, res) => {
         username,
         email,
         password,
+        profilePic: "",
+        imageId: "",
+        location: "",
+        role: "",
         isVerified: false,
       });
-      const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
-        expiresIn: "3d",
-      });
-      if (!token) {
-        res
-          .status(400)
-          .json({ message: "error occurred while generating token" });
-      }
       res
         .status(201)
         .cookie("token", token, {
@@ -62,16 +61,34 @@ const register = async (req, res) => {
 exports.register = register;
 
 const updateUser = async (req, res) => {
-  const { imageUrl, imageKey, location } = req.body;
+  const { type, imageUrl, imageId, location, role } = req.body;
   const token = req.cookies.token;
-  const { userId } = jwt.decode(token);
+  const { email } = jwt.decode(token);
+  let updateUser;
   await connectToDatabase();
-  const updateUser = await User.findByIdAndUpdate(userId, {
-    profilePic: imageUrl,
-    imageKey,
-    location,
-  });
-
-  res.status(200).send({ success: true });
+  if (type === "createProfile") {
+    updateUser = await User.updateMany(
+      { email },
+      {
+        profilePic: imageUrl,
+        imageId,
+        location,
+      }
+    );
+  } else {
+    updateUser = await User.updateOne(
+      { email },
+      {
+        role,
+      }
+    );
+  }
+  if (!updateUser) {
+    res.status(400).json({
+      message: "user not found or error occurred while updating profile",
+    });
+    return;
+  }
+  res.status(200).send({ success: true, data: updateUser });
 };
 exports.updateUser = updateUser;
