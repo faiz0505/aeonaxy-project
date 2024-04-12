@@ -38,7 +38,7 @@ const verifyEmailByToken = (req, res) => {
     );
     res
       .status(200)
-      .cookie("token", updateToken, { httpOnly: true })
+      .cookie("token", updateToken, { httpOnly: false })
       .json({ success: true });
   });
 };
