@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const connectToDatabase = require("../database/connection");
 const User = require("../database/models");
 const transporter = require("../utils");
+const { trusted } = require("mongoose");
 const clientUrl = process.env.CLIENT_URL;
 const register = async (req, res) => {
   const { name, username, email, password } = req.body;
@@ -45,7 +46,7 @@ const register = async (req, res) => {
       res
         .status(201)
         .cookie("token", token, {
-          httpOnly: false,
+          httpOnly: true,
           maxAge: 7 * 24 * 60 * 60 * 1000,
           secure: true,
           overwrite: true,
@@ -93,7 +94,7 @@ const updateUser = async (req, res) => {
     res
       .status(200)
       .cookie("token", updateToken, {
-        httpOnly: false,
+        httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
         overwrite: true,
@@ -133,7 +134,7 @@ const updateUser = async (req, res) => {
       res
         .status(200)
         .cookie("token", updateToken, {
-          httpOnly: false,
+          httpOnly: true,
           maxAge: 7 * 24 * 60 * 60 * 1000,
           secure: true,
           overwrite: true,
@@ -182,7 +183,7 @@ const signin = async (req, res) => {
     res
       .status(200)
       .cookie("token", token, {
-        httpOnly: false,
+        httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
         overwrite: true,

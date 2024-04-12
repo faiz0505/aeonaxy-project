@@ -37,7 +37,7 @@ const verifyEmailByToken = (req, res) => {
     res
       .status(200)
       .cookie("token", updateToken, {
-        httpOnly: false,
+        httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
       })
