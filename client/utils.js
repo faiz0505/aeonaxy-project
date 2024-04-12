@@ -11,6 +11,7 @@ export const getToken = async () => {
     const res = await api.get(`${apiUrl}/fetch-token`);
     return res.data;
   } catch (error) {
+    console.log(error);
     toast.error(error.message);
   }
 };
