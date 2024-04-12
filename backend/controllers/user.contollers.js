@@ -47,6 +47,7 @@ const register = async (req, res) => {
         .cookie("token", token, {
           httpOnly: false,
           maxAge: 7 * 24 * 60 * 60 * 1000,
+          secure: true,
           overwrite: true,
         })
         .json({
@@ -91,7 +92,12 @@ const updateUser = async (req, res) => {
     }
     res
       .status(200)
-      .cookie("token", updateToken, { httpOnly: false, overwrite: true })
+      .cookie("token", updateToken, {
+        httpOnly: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true,
+        overwrite: true,
+      })
       .json({ success: true });
   } else if (type === "changeEmail") {
     const updateUser = await User.findOneAndUpdate(
@@ -129,6 +135,7 @@ const updateUser = async (req, res) => {
         .cookie("token", updateToken, {
           httpOnly: false,
           maxAge: 7 * 24 * 60 * 60 * 1000,
+          secure: true,
           overwrite: true,
         })
         .json({ success: true, message: updateUser });
@@ -177,6 +184,7 @@ const signin = async (req, res) => {
       .cookie("token", token, {
         httpOnly: false,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true,
         overwrite: true,
       })
       .json({ message: "OK" });
