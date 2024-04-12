@@ -20,13 +20,11 @@ const verifyEmailByToken = (req, res) => {
         .send("Invalid or expired verification link." + err);
     }
     await connectToDatabase();
-    console.log(decoded.email);
     const user = await User.findOneAndUpdate(
       { email: decoded.email },
       { $set: { isVerified: true } },
       { new: true }
     );
-    console.log(user);
     const updateToken = jwt.sign(
       {
         email: user.email,
@@ -38,7 +36,10 @@ const verifyEmailByToken = (req, res) => {
     );
     res
       .status(200)
-      .cookie("token", updateToken, { httpOnly: false })
+      .cookie("token", updateToken, {
+        httpOnly: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
       .json({ success: true });
   });
 };

@@ -46,6 +46,7 @@ const register = async (req, res) => {
         .status(201)
         .cookie("token", token, {
           httpOnly: false,
+          maxAge: 7 * 24 * 60 * 60 * 1000,
           overwrite: true,
         })
         .json({
@@ -111,7 +112,6 @@ const updateUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
-    console.log(updateUser);
     const mailOptions = {
       from: "faizali786313@gmail.com",
       to: updateUser.email,
@@ -128,6 +128,7 @@ const updateUser = async (req, res) => {
         .status(200)
         .cookie("token", updateToken, {
           httpOnly: false,
+          maxAge: 7 * 24 * 60 * 60 * 1000,
           overwrite: true,
         })
         .json({ success: true, message: updateUser });
@@ -173,7 +174,11 @@ const signin = async (req, res) => {
     );
     res
       .status(200)
-      .cookie("token", token, { httpOnly: false, overwrite: true })
+      .cookie("token", token, {
+        httpOnly: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        overwrite: true,
+      })
       .json({ message: "OK" });
   } catch (error) {
     res.status(500).json({ message: error });
