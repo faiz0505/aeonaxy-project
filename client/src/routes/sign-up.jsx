@@ -6,11 +6,13 @@ import { MdError } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { Input } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../utils";
+import { api, apiUrl } from "../../utils";
+import toast from "react-hot-toast";
 const SignupForm = () => {
   const [isSelected, setIsSelected] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -20,19 +22,22 @@ const SignupForm = () => {
   const onSubmit = async (data) => {
     try {
       if (!isSelected) {
-        alert("please agree ");
+        toast.error("please agree the terms and conditions");
         return;
       }
       setErrorMsg(null);
       setIsLoading(true);
-      const res = await api.post("http://localhost:8000/register", data);
+      const res = await api.post(`${apiUrl}/register`, data);
+      toast.success("your account has been registered");
       navigate("/create-profile");
     } catch (error) {
       if (error.response.status === 401) {
         setErrorMsg(error.response.data.message);
         return;
       }
-      console.log(error);
+      toast.error(
+        error.message || "unexpected error occurred! please try again"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +68,12 @@ const SignupForm = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="self-center md:w-96 w-full flex flex-col gap-4"
         >
-          <h4 className="text-lg font-bold">Sign up to Dribble</h4>
+          <h4 className="text-lg font-bold">
+            Sign up to{" "}
+            <span className="text-lg font-bold italic mr-3 text-rose-800">
+              Dribble
+            </span>
+          </h4>
           {errorMsg && (
             <p className="text-sm text-red-600 flex items-center gap-2">
               <MdError />

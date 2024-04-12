@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Avatar, Input } from "@nextui-org/react";
 import Button from "../components/Button";
 import axios from "axios";
-import { api } from "../../utils";
+import { api, apiUrl } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const CreateProfile = () => {
   const [tempImgUrl, setTempImgurl] = useState();
   const [isLoading, setIsLoading] = useState();
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -26,25 +28,27 @@ const CreateProfile = () => {
         "https://api.cloudinary.com/v1_1/drev9bq6g/image/upload",
         formData
       );
-      const res = await api.post("/update-profile", {
+      const res = await api.post(`${apiUrl}/update-profile`, {
         type: "createProfile",
         imageUrl: uploadImage.data.secure_url,
         imageId: uploadImage.data.public_id,
         location: location,
       });
       if (res.status === 200) {
-        alert("user updated successfully");
+        toast.success("you have successfully created a profile");
         navigate("/select-role");
       }
     } catch (error) {
-      console.log(error);
+      toast.error(
+        error.message || `failed to create profile with ${error.status} code`
+      );
     } finally {
       setIsLoading(false);
     }
   };
   return (
-    <main className="h-screen flex flex-col gap-8">
-      <div>Dribble</div>
+    <main className="h-screen flex flex-col gap-8 p-2 md:p-5">
+      <div className="text-lg font-bold italic mr-3 text-rose-800">Dribble</div>
       <div className="self-center flex flex-col gap-5">
         <div>
           <h1 className="text-2xl font-bold mb-2">

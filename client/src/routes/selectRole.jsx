@@ -4,8 +4,9 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { CustomRadio } from "../components/CustomRadio";
 import { RadioGroup, cn } from "@nextui-org/react";
-import { api } from "../../utils";
+import { api, apiUrl } from "../../utils";
 import { useNavigate, useRevalidator } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const selectRole = () => {
   const [selected, setSelected] = React.useState();
@@ -14,23 +15,25 @@ const selectRole = () => {
   const onFinish = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/update-profile", {
+      const res = await api.post(`${apiUrl}/update-profile`, {
         role: selected,
         type: "role",
       });
       if (res.status === 200) {
-        alert("Profile updated successfully");
+        toast.success("Great");
         navigate("/");
         revalidator.revalidate();
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.message || "porfile update failed! please try again");
     }
   };
   return (
     <main className="h-screen p-2 md:p-5 flex flex-col gap-5">
       <section className="flex gap-5 items-center">
-        <div>Dribble</div>
+        <div className="text-lg font-bold italic mr-3 text-rose-800">
+          Dribble
+        </div>
         <Button
           isIconOnly={true}
           size={"sm"}

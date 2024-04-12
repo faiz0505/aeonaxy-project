@@ -1,14 +1,12 @@
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const connectToDatabase = require("../database/connection");
 const User = require("../database/models");
 const transporter = require("../utils");
-const { response } = require("express");
-
+const clientUrl = process.env.CLIENT_URL;
 const register = async (req, res) => {
   const { name, username, email, password } = req.body;
   const token = jwt.sign({ email, isVarified: false }, process.env.JWT_SECRET, {
-    expiresIn: "3d",
+    expiresIn: "7d",
   });
   await connectToDatabase();
   const userExist = await User.findOne({ email });
@@ -25,16 +23,14 @@ const register = async (req, res) => {
     from: "faizali786313@gmail.com",
     to: email,
     subject: "Email Verification",
-    html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><button style="background:#3630a3;color:white;padding:"4px,2px";"><a href="http://localhost:3000/verify-email?token=${token}">Signup to Dribble</a></button>`,
+    html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><a href="${clientUrl}/verify-token?token=${token}"><button style="background:#3630a3;color:white;padding:4px 2px;">Signup to Dribble</button></a>`,
   };
 
   // Send email
   transporter.sendMail(mailOptions, async (error, info) => {
     if (error) {
-      console.log(error);
       res.status(401).json({ error: "Failed to send verification email" });
     } else {
-      console.log("Email sent: " + info.response);
       const newUser = await User.create({
         name,
         username,
@@ -50,6 +46,7 @@ const register = async (req, res) => {
         .status(201)
         .cookie("token", token, {
           httpOnly: true,
+          overwrite: true,
         })
         .json({
           message: "Verification email sent successfully",
@@ -61,34 +58,137 @@ const register = async (req, res) => {
 exports.register = register;
 
 const updateUser = async (req, res) => {
-  const { type, imageUrl, imageId, location, role } = req.body;
+  const { type, imageUrl, imageId, location, role, newEmail } = req.body;
   const token = req.cookies.token;
   const { email } = jwt.decode(token);
-  let updateUser;
   await connectToDatabase();
   if (type === "createProfile") {
-    updateUser = await User.updateMany(
+    const updateUser = await User.findOneAndUpdate(
       { email },
       {
-        profilePic: imageUrl,
-        imageId,
-        location,
-      }
+        $set: {
+          profilePic: imageUrl,
+          imageId,
+          location,
+        },
+      },
+      { new: true }
     );
-  } else {
-    updateUser = await User.updateOne(
+    const updateToken = jwt.sign(
+      {
+        email: updateUser.email,
+        isVerified: updateUser.isVerified,
+        profile: updateUser.profilePic,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    if (!updateToken) {
+      return res
+        .status(400)
+        .json({ message: "An error has occurred updating the token." });
+    }
+    res
+      .status(200)
+      .cookie("token", updateToken, { httpOnly: true, overwrite: true })
+      .json({ success: true });
+  } else if (type === "changeEmail") {
+    const updateUser = await User.findOneAndUpdate(
       { email },
       {
-        role,
-      }
+        $set: {
+          email: newEmail,
+        },
+      },
+      { new: true }
     );
-  }
-  if (!updateUser) {
-    res.status(400).json({
-      message: "user not found or error occurred while updating profile",
+    const updateToken = jwt.sign(
+      {
+        email: updateUser.email,
+        isVerified: updateUser.isVerified,
+        profile: updateUser.profilePic,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    console.log(updateUser);
+    const mailOptions = {
+      from: "faizali786313@gmail.com",
+      to: updateUser.email,
+      subject: "Email Verification",
+      html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><a href="${clientUrl}/verify-token?token=${updateToken}"><button style="background:#3630a3;color:white;padding:4px 2px;">Signup to Dribble</button></a>`,
+    };
+
+    transporter.sendMail(mailOptions, async (err, info) => {
+      if (err) {
+        res.status(400).json({ error: "Email not sent! please try again" });
+        return;
+      }
+      res
+        .status(200)
+        .cookie("token", updateToken, {
+          httpOnly: true,
+          overwrite: true,
+        })
+        .json({ success: true, message: updateUser });
     });
-    return;
+  } else {
+    const updateUser = await User.findOneAndUpdate(
+      { email },
+      { $set: { role } },
+      { new: true }
+    );
+    if (!updateUser) {
+      res.status(400).json({
+        message: "user not found or error occurred while updating profile",
+      });
+      return;
+    }
+    res.status(200).send({ success: true, data: updateUser });
   }
-  res.status(200).send({ success: true, data: updateUser });
 };
 exports.updateUser = updateUser;
+
+const signin = async (req, res) => {
+  const { user } = req.body;
+  try {
+    await connectToDatabase();
+    const existingUser = await User.findOne({ email: user.email });
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ message: "user not found! please register" });
+    }
+    if (user.password !== existingUser.password) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+    const token = jwt.sign(
+      {
+        email: user.email,
+        isVerified: existingUser.isVerified,
+        profile: existingUser.profilePic,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    res
+      .status(200)
+      .cookie("token", token, { httpOnly: true, overwrite: true })
+      .json({ message: "OK" });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+exports.signin = signin;
+
+const fetchUserData = async (req, res, next) => {
+  const { user } = req.body;
+  try {
+    await connectToDatabase();
+    const fethedUser = await User.findOne({ email: user });
+    res.status(200).json({ user: fethedUser });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+exports.fetchUserData = fetchUserData;

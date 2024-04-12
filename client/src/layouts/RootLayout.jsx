@@ -1,24 +1,14 @@
-import React from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import Footer from "../components/Footer";
+
 const RootLayout = () => {
   return (
-    
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <section>
-        <NavigationBar />
-      </section>
+    <main>
+      <NavigationBar />
       <Outlet />
-      <section style={{ marginTop: "auto" }}>
-        <Footer />
-      </section>
+      <Footer />
     </main>
   );
 };
