@@ -3,19 +3,23 @@ import { api, apiUrl, getToken } from "../../utils";
 import Button from "../components/Button";
 import { useNavigate, useRevalidator } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Spinner } from "@nextui-org/react";
 
 const profile = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [session, setSession] = useState();
   const [userData, setUserData] = useState();
   const revalidator = useRevalidator();
   const navigate = useNavigate();
   const fetchUserData = async () => {
     try {
+      setIsLoading(true);
       const res = await api.post(`${apiUrl}/fetch-user`, {
         user: session.user.email,
       });
       if (res.status === 200) {
         setUserData(res.data.user);
+        setIsLoading(false);
         return;
       }
     } catch (error) {
@@ -46,6 +50,13 @@ const profile = () => {
       fetchUserData();
     }
   }, [session]);
+  if (isLoading) {
+    return (
+      <main className="min-h-screen w-full grid place-items-center">
+        <Spinner />
+      </main>
+    );
+  }
   return (
     <main className="w-full min-h-[85vh] flex flex-col gap-4 items-center justify-center">
       <p>
