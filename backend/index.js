@@ -16,6 +16,7 @@ app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.set("trust proxy");
 app.use(require("./routes/routes"));
 app.get("/", (req, res) => {
   res.send("server is live");

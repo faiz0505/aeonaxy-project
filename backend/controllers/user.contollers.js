@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const connectToDatabase = require("../database/connection");
 const User = require("../database/models");
 const transporter = require("../utils");
-const { trusted } = require("mongoose");
 const clientUrl = process.env.CLIENT_URL;
 const register = async (req, res) => {
   const { name, username, email, password } = req.body;
@@ -97,6 +96,7 @@ const updateUser = async (req, res) => {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
+        domain: ".vercel.app",
         overwrite: true,
       })
       .json({ success: true });
@@ -137,6 +137,7 @@ const updateUser = async (req, res) => {
           httpOnly: true,
           maxAge: 7 * 24 * 60 * 60 * 1000,
           secure: true,
+          domain: ".vercel.app",
           overwrite: true,
         })
         .json({ success: true, message: updateUser });
@@ -186,6 +187,7 @@ const signin = async (req, res) => {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
+        domain: ".vercel.app",
         overwrite: true,
       })
       .json({ message: "OK" });
