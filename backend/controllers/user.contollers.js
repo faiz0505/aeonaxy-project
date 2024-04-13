@@ -96,7 +96,6 @@ const updateUser = async (req, res) => {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        domain: ".vercel.app",
         overwrite: true,
       })
       .json({ success: true });
@@ -137,7 +136,6 @@ const updateUser = async (req, res) => {
           httpOnly: true,
           maxAge: 7 * 24 * 60 * 60 * 1000,
           secure: true,
-          domain: ".vercel.app",
           overwrite: true,
         })
         .json({ success: true, message: updateUser });
@@ -187,7 +185,6 @@ const signin = async (req, res) => {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true,
-        domain: ".vercel.app",
         overwrite: true,
       })
       .json({ message: "OK" });
