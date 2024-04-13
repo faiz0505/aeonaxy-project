@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSearchParams, useNavigate, useRevalidator } from "react-router-dom";
 import { api, apiUrl } from "../../utils";
 import toast from "react-hot-toast";
-const emailVerification = ({ setError }) => {
+const emailVerification = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const revalidator = useRevalidator();
