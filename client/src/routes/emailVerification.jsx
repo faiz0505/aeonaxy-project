@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useNavigate, useRevalidator } from "react-router-dom";
-import { api, apiUrl } from "../../utils";
-import toast from "react-hot-toast";
+// import { useSearchParams, useNavigate, useRevalidator } from "react-router-dom";
+// import { api, apiUrl } from "../../utils";
+// import toast from "react-hot-toast";
 const emailVerification = () => {
   // const [isLoading, setIsLoading] = useState(false);
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
   // const revalidator = useRevalidator();
   // const navigate = useNavigate();
-  const token = searchParams.get("token");
+  // const token = searchParams.get("token");
   // useEffect(() => {
   //   setIsLoading(true);
   //   api
@@ -26,7 +26,7 @@ const emailVerification = () => {
   //     });
   // }, []);
 
-  return <main>verifying... {token && JSON.stringify(token)}</main>;
+  return <main>verifying... </main>;
 };
 
 export default emailVerification;

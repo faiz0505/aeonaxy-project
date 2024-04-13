@@ -26,17 +26,12 @@ const router = createBrowserRouter([
       },
       { path: "/select-role", element: <SelectRole /> },
       { path: "/profile", element: <Profile /> },
+      { path: "/verify-token", element: <EmailVerification /> },
     ],
   },
   {
     element: <RootLayout />,
-    children: [
-      { path: "/", element: <IndexPage /> },
-      {
-        path: "/verify-token",
-        element: <EmailVerification />,
-      },
-    ],
+    children: [{ path: "/", element: <IndexPage /> }],
   },
 ]);
 
