@@ -44,7 +44,7 @@ const emailVerify = ({ session }) => {
         as={Link}
         to={`verify-token?token=${session?.token}`}
       />
-      <h6 className="text-xs font-bold">{session?.user.email}</h6>
+      <h6 className="text-xs font-bold">{session?.user?.email}</h6>
       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iure.</p>
       <p className="text-xs">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
@@ -67,7 +67,7 @@ const emailVerify = ({ session }) => {
           <form className="flex flex-col gap-3" onSubmit={handleEmailUpdate}>
             <p className="text-xs">
               your existing email :{" "}
-              <span className="font-semibold">{session?.user.email}</span>
+              <span className="font-semibold">{session?.user?.email}</span>
             </p>
             <Input type="email" placeholder="Enter new Email" name="email" />
             <Button
