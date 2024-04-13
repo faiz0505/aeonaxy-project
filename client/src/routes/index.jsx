@@ -11,7 +11,7 @@ const index = () => {
     });
   }, []);
 
-  if (!session.user) {
+  if (!session?.user) {
     return (
       <main className="w-full py-60 flex justify-center items-center">
         <h4 className="text-4xl font-bold">
@@ -21,7 +21,7 @@ const index = () => {
     );
   }
 
-  return !session.user.isVerified ? (
+  return !session?.user.isVerified ? (
     <EmailVerify session={session} />
   ) : (
     <main className="w-full min-h-[85vh] flex flex-col gap-4 items-center justify-center">
