@@ -48,6 +48,6 @@ const verifyEmailByToken = (req, res) => {
 exports.verifyEmailByToken = verifyEmailByToken;
 
 const removeCookie = (req, res) => {
-  return res.status(200).clearCookie("token").json({ success: true });
+  return res.status(200).clearCookie().json({ success: true });
 };
 exports.removeCookie = removeCookie;
