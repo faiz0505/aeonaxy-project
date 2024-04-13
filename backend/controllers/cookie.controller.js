@@ -50,7 +50,7 @@ exports.verifyEmailByToken = verifyEmailByToken;
 const removeCookie = (req, res) => {
   return res
     .status(200)
-    .clearCookie("token", { sameSite: "none" })
+    .clearCookie("token", { sameSite: "none", secure: true })
     .json({ success: true });
 };
 exports.removeCookie = removeCookie;
