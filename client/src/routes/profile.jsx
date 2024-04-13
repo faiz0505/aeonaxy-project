@@ -70,7 +70,10 @@ const profile = () => {
       <p>
         your location : <span className="font-bold">{userData?.location}</span>
       </p>
-      <Button color="danger" text={"Log Out"} handleClick={handleLogout} />
+      <div className="flex gap-3">
+        <Button color="primary" text={"Back to home"} as={Link} to={"/"} />
+        <Button color="danger" text={"Log Out"} handleClick={handleLogout} />
+      </div>
     </main>
   );
 };
