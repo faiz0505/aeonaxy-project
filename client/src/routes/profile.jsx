@@ -32,7 +32,6 @@ const profile = () => {
       if (res.status === 200) {
         revalidator.revalidate();
         navigate("/");
-        window.location.reload();
       }
     } catch (error) {
       toast.error(error.message || "logout failed");
