@@ -18,7 +18,7 @@ export default function NavigationBar() {
   const [session, setSession] = React.useState(false);
   const menuItems = ["Profile", "Dashboard", "Activity", "Analytics"];
   useEffect(() => {
-    getToken().then((res) => res && setSession(res));
+    getToken().then((res) => res && setSession(res?.user));
   }, []);
 
   return (
