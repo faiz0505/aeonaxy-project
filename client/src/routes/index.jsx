@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EmailVerify from "../components/emailVerify";
 import { getToken } from "../../utils";
+import { Link } from "react-router-dom";
 
 const index = () => {
   const [session, setSession] = useState();
@@ -16,6 +17,7 @@ const index = () => {
         <h4 className="text-4xl font-bold">
           Please Register/SingIn to continue...
         </h4>
+        <Link to="/verify-token">verify token</Link>
       </main>
     );
   }
