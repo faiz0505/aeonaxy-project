@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, useRevalidator } from "react-router-dom";
 import { api, apiUrl } from "../../utils";
 import toast from "react-hot-toast";
@@ -8,7 +8,7 @@ const emailVerification = () => {
   const revalidator = useRevalidator();
   const navigate = useNavigate();
   const token = searchParams.get("token");
-  useState(() => {
+  useEffect(() => {
     setIsLoading(true);
     api
       .post(`${apiUrl}/verify-token`, { token })
