@@ -4,7 +4,7 @@ import Button from "../components/Button";
 import { useNavigate, useRevalidator } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Spinner } from "@nextui-org/react";
-
+import { Link } from "react-router-dom";
 const profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [session, setSession] = useState();
