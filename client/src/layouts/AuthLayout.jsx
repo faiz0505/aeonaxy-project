@@ -8,7 +8,7 @@ export default function AuthLayout() {
     const checkAuthAndRedirect = async () => {
       const session = await getToken();
       if (!session) {
-        navigate("/sign-in");
+        navigate("/sign-up");
       }
     };
 
