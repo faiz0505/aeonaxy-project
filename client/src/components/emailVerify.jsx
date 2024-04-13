@@ -19,7 +19,7 @@ const emailVerify = ({ session }) => {
       setIsLoading(true);
       const res = await api.post(`${apiUrl}/update-profile`, {
         type: "changeEmail",
-        email: session.email,
+        email: session.user.email,
         newEmail: newEmail,
       });
 
@@ -38,11 +38,13 @@ const emailVerify = ({ session }) => {
     <section className="md:h-[82vh] text-center flex flex-col items-center gap-4 w-full md:w-[40%] mx-auto justify-center my-5">
       <h2 className="text-2xl font-bold">Please verify your email...</h2>
       <MdOutlineMarkEmailRead className="text-6xl" />
-      <p className="text-xs">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis sunt
-        incidunt voluptates!
-      </p>
-      <h6 className="text-xs font-bold">{session.email}</h6>
+      <Button
+        text={"Click Here To Verify"}
+        color="secondary"
+        as={Link}
+        to={`verify-token?token=${session?.token}`}
+      />
+      <h6 className="text-xs font-bold">{session?.user.email}</h6>
       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iure.</p>
       <p className="text-xs">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
@@ -65,7 +67,7 @@ const emailVerify = ({ session }) => {
           <form className="flex flex-col gap-3" onSubmit={handleEmailUpdate}>
             <p className="text-xs">
               your existing email :{" "}
-              <span className="font-semibold">{session.email}</span>
+              <span className="font-semibold">{session?.user.email}</span>
             </p>
             <Input type="email" placeholder="Enter new Email" name="email" />
             <Button

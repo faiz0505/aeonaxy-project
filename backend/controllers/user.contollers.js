@@ -23,7 +23,12 @@ const register = async (req, res) => {
     from: "faizali786313@gmail.com",
     to: email,
     subject: "Email Verification",
-    html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><a href="${clientUrl}/verify-token?token=${token}"><button style="background:#3630a3;color:white;padding:4px 2px;">Signup to Dribble</button></a>`,
+    html: `
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+      <h2 style="color: #3630a3;">Welcome to Our Platform!</h2>
+      <p style="font-size: 16px; color: #333;">Thank you for signing up. We're excited to have you on board.</p>
+    </div>
+  `,
   };
 
   // Send email
@@ -124,7 +129,12 @@ const updateUser = async (req, res) => {
       from: "faizali786313@gmail.com",
       to: updateUser.email,
       subject: "Email Verification",
-      html: `<p>Dribble</p><h1>Signup to Dribble</h1><p>Click the button below to signup</p><a href="${clientUrl}/verify-token?token=${updateToken}"><button style="background:#3630a3;color:white;padding:4px 2px;">Signup to Dribble</button></a>`,
+      html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2 style="color: #3630a3;">Welcome to Our Platform!</h2>
+        <p style="font-size: 16px; color: #333;">Thank you for signing up. We're excited to have you on board.</p>
+      </div>
+    `,
     };
 
     transporter.sendMail(mailOptions, async (err, info) => {

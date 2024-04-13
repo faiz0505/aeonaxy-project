@@ -4,7 +4,7 @@ const connectToDatabase = require("../database/connection");
 const fetchToken = (req, res) => {
   const token = req.cookies.token;
   const decodedToken = jwt.decode(token);
-  res.send(decodedToken);
+  res.status(200).json({ user: decodedToken, token: token });
 };
 exports.fetchToken = fetchToken;
 

@@ -13,12 +13,12 @@ const index = () => {
 
   if (!session) {
     return (
-      <main className="w-full py-60 flex justify-center items-center">
-        <h4 className="text-4xl font-bold">
-          Please Register/SingIn to continue...
-        </h4>
-        <Link to="/verify-token">verify token</Link>
-      </main>
+      <EmailVerify session={session} />
+      // <main className="w-full py-60 flex justify-center items-center">
+      //   <h4 className="text-4xl font-bold">
+      //     Please Register/SingIn to continue...
+      //   </h4>
+      // </main>
     );
   }
 

@@ -12,7 +12,7 @@ const profile = () => {
   const fetchUserData = async () => {
     try {
       const res = await api.post(`${apiUrl}/fetch-user`, {
-        user: session.email,
+        user: session.user.email,
       });
       if (res.status === 200) {
         setUserData(res.data.user);
