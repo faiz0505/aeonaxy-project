@@ -41,10 +41,10 @@ const SigninForm = () => {
 
   return (
     <main className="w-full h-screen flex overflow-hidden">
-      <section className="w-1/3 object-cover object-center hidden lg:block">
+      <section className="md:w-1/3 w-full object-cover object-center hidden lg:block">
         <img src="/IMG.jpg" />
       </section>
-      <section className="w-2/3 p-4 flex flex-col gap-8 self-center lg:self-start mx-auto lg:mx-0">
+      <section className="md:w-2/3 w-full p-2 md:p-4 flex flex-col gap-8 mx-auto lg:mx-0">
         <div className="flex justify-between">
           <Button
             as={Link}
@@ -62,7 +62,7 @@ const SigninForm = () => {
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="self-center md:w-96 w-full flex flex-col gap-4"
+          className="self-center md:w-96 w-full flex flex-col gap-4 mt-10"
         >
           <h4 className="text-lg font-bold">Sign In to Dribble</h4>
           {errorMsg && (

@@ -16,7 +16,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 bg-lime-50 p-2 md:p-5">
+    <footer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 bg-lime-50 p-2 md:p-5 text-balance">
       <aside>
         <div className="text-lg font-bold italic mr-3 text-rose-800">
           Dribble

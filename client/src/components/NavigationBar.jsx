@@ -48,7 +48,7 @@ export default function NavigationBar() {
             startContent={<FaMagnifyingGlass />}
             className=" w-32"
           />
-          <NavbarItem>
+          <NavbarItem className="hidden md:block">
             <Button
               text="SignIn"
               size="sm"
